@@ -16,9 +16,13 @@ static PyObject *search(PyObject *self, PyObject *args)
     char file_name[]="tag_file.json";
     char symb='\0';
     int i=0;
-    char key[100];
-    if(!PyArg_ParseTuple(args,"s", &key))
+    /*char key[100];*/
+    PyObject *str;
+    if(!PyArg_ParseTuple(args,"O|i:decode", &str))
         return NULL;
+
+    const char* key=PyUnicode_AsUTF8(str);
+
     char res_list[100];
     int key_len=0;
     while(key[i]!='\0'){
