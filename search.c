@@ -8,38 +8,33 @@
 
 static PyObject *search(PyObject *self, PyObject *args)
 {
-    setlocale(LC_ALL,"Russian");
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
+    /*setlocale(LC_ALL,"Russian");*/
+    /*setlocale (LC_ALL, "UTF-8");*/
     FILE *fp;
     /*char dir[100];*/
-    char file_name[]="tag_file.json";
+    char file_name[]="tag_file0.json";
     char symb='\0';
     int i=0;
     /*char key[100];*/
     PyObject *str;
-    if(!PyArg_ParseTuple(args,"O|i:decode", &str))
+    int key_len;
+    if(!PyArg_ParseTuple(args,"O|i:decode i", &str,&key_len))
         return NULL;
 
     const char* key=PyUnicode_AsUTF8(str);
 
     char res_list[100];
-    int key_len=0;
-    while(key[i]!='\0'){
-        i++;
-        key_len++;
-    }
     int counter=-1;
     int match=0;
 
-    for(i=0;i<=100;i++){
+    for(i=0;i<100;i++){
         res_list[i]='0';
     }
 
     if((fp = fopen(file_name, "r")) == NULL){
         printf("Не удалось открыть файл");
         getchar();
-        return 0;
+        return NULL;
     }
 
     while(!feof(fp)){
@@ -81,6 +76,7 @@ static PyObject *search(PyObject *self, PyObject *args)
                         if(i==key_len){
                             res_list[match]=(char)counter;
                             match++;
+                            /*return Py_BuildValue("ic", counter, symb);*/
                             printf("%d\n",counter);
                         }
                         i=0;
@@ -110,7 +106,7 @@ static PyObject *search(PyObject *self, PyObject *args)
 */
 
     fclose(fp);
-    return Py_BuildValue("s", key);
+    return Py_BuildValue("s#", res_list, match);
 }
 
 
